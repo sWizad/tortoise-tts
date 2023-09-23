@@ -138,7 +138,8 @@ def do_spectrogram_diffusion(diffusion_model, diffuser, latents, conditioning_la
         precomputed_embeddings = diffusion_model.timestep_independent(latents, conditioning_latents, output_seq_len, False)
 
         noise = torch.randn(output_shape, device=latents.device) * temperature
-        mel = diffuser.p_sample_loop(diffusion_model, output_shape, noise=noise,
+        print("sampling:",diffuser.method_name)
+        mel = diffuser.method_loop(diffusion_model, output_shape, noise=noise,
                                       model_kwargs={'precomputed_aligned_embeddings': precomputed_embeddings},
                                      progress=verbose)
         return denormalize_tacotron_mel(mel)[:,:,:output_seq_len]
@@ -295,6 +296,7 @@ class TextToSpeech:
             clvp_cvvp_slider=.5,
             # diffusion generation parameters follow
             diffusion_iterations=100, cond_free=True, cond_free_k=2, diffusion_temperature=1.0,
+            method_name = 'ddim', method_order = 1.0,
             **hf_generate_kwargs):
         """
         Produces an audio clip of the given text being spoken with the given reference voice.
@@ -358,6 +360,7 @@ class TextToSpeech:
         diffusion_conditioning = diffusion_conditioning.cuda()
 
         diffuser = load_discrete_vocoder_diffuser(desired_diffusion_steps=diffusion_iterations, cond_free=cond_free, cond_free_k=cond_free_k)
+        diffuser.method_select(method_name, method_order)
 
         with torch.no_grad():
             samples = []
