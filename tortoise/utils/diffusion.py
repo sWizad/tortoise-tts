@@ -15,7 +15,7 @@ import torch
 import torch as th
 from tqdm import tqdm
 
-from functools import partial
+from functools import partial 
 
 
 def normal_kl(mean1, logvar1, mean2, logvar2):
@@ -255,7 +255,7 @@ class GaussianDiffusion:
         self.g_prev[0] = self.g[0]
         self.method_loop = None
 
-    def method_select(self, method_name='', order=1.0):
+    def method_select(self, method_name='', order=1.0): 
         if method_name in ['ddim']:
             self.method_loop = self.ddim_sample_loop
         elif method_name in ['plms','pndm']:
@@ -1612,7 +1612,7 @@ def space_timesteps(num_timesteps, section_counts):
         all_steps += taken_steps
         start_idx += size
     return set(all_steps)
-
+ 
 
 class _WrappedModel:
     def __init__(self, model, timestep_map, rescale_timesteps, original_num_steps):

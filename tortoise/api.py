@@ -407,7 +407,7 @@ class TextToSpeech:
             best_results = samples[torch.topk(clip_results, k=k).indices]
             self.clvp = self.clvp.cpu()
             self.cvvp = self.cvvp.cpu()
-            del samples
+            del samples 
 
             # The diffusion model actually wants the last hidden layer from the autoregressive model as conditioning
             # inputs. Re-produce those for the top results. This could be made more efficient by storing all of these
